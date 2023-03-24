@@ -13,23 +13,25 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      jfrog_dns:
-        description: 'your JFrog Platform SaaS URL (for example, yann.jfrog.io)'
-        required: true 
-        type: string
-      jf_secret:
-        description: 'token to configure the JFrog CLI in the Github Workflows (JF_SECRET)'
-        type: string
-        required: true 
-      ci_secret:
-        description: 'ci user s password (JF_CI_SECRET)'
-        type: string
-        required: true 
+#    inputs:
+#      jfrog_dns:
+#        description: 'your JFrog Platform SaaS URL (for example, yann.jfrog.io)'
+#        required: true 
+#        type: string
+#      jf_secret:
+#        description: 'token to configure the JFrog CLI in the Github Workflows (JF_SECRET)'
+#        type: string
+#        required: true 
+#      ci_secret:
+#        description: 'ci user s password (JF_CI_SECRET)'
+#        type: string
+#        required: true 
 env:
   # the server_id is injected in the JF_SECRET and refers to the CLI profile name
   # JF_ENV_1: ${{ secrets.JF_SECRET }}
-  JF_ENV_1: ${{ inputs.jf_secret }}
+  JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
+
+  #JF_ENV_1: ${{ inputs.jf_secret }}
   # SERVER_ID: setup-jfrog-cli-server
   SERVER_ID: jfrog-platform-training
   JF_CLI_VERSION: 2.27.1
@@ -56,8 +58,8 @@ jobs:
 
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v3
-        env:
-          JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
+#        env:
+ #         JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
         #     JF_URL: https://${{ inputs.jfrog_dns }}    
         #     JF_USER: ci
         #     JF_PASSWORD: ${{ inputs.ci_secret }}
@@ -117,7 +119,7 @@ jobs:
     needs: build_webapp
     runs-on: ubuntu-latest
     env:
-      DOCKER_REG: ${{ inputs.jfrog_dns }}
+      DOCKER_REG: ${{ secrets.JF_SECRET_DOCKER_REG }}
       DOCKER_REPO: man-docker
       DOCKER_USER: ci
       PROMOTE_REPO: man-docker-release-local
@@ -145,8 +147,8 @@ jobs:
         with:
           registry: ${{ env.DOCKER_REG }}
           username: ${{ env.DOCKER_USER }}
-          password: ${{ inputs.ci_secret }}
-          # password: ${{ secrets.DOCKER_SECRET }}
+          #password: ${{ inputs.ci_secret }}
+          password: ${{ secrets.DOCKER_SECRET }}
 
       - name: Build Docker images
         uses: docker/build-push-action@v3
