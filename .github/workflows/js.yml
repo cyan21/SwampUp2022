@@ -148,7 +148,7 @@ jobs:
           registry: ${{ env.DOCKER_REG }}
           username: ${{ env.DOCKER_USER }}
           #password: ${{ inputs.ci_secret }}
-          password: ${{ secrets.JF_SECRET_DOCKER_PASS }} }}
+          password: ${{ secrets.JF_SECRET_DOCKER_PASS }}
 
       - name: Build Docker images
         uses: docker/build-push-action@v3
