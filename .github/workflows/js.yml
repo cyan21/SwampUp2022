@@ -33,8 +33,8 @@ env:
 
   #JF_ENV_1: ${{ inputs.jf_secret }}
   # SERVER_ID: setup-jfrog-cli-server
-  SERVER_ID: jfrog-platform-training
-  JF_CLI_VERSION: 2.27.1
+  SERVER_ID: yann-sbx
+  JF_CLI_VERSION: latest
   APP_VERSION: 1.0.0
   GENERIC_REPO: man-generic
   SRC_FOLDER: SUP003-Intro_to_DevSecOps_with_JFrog_Xray/provisioning/js-demo
@@ -121,15 +121,15 @@ jobs:
     env:
       DOCKER_REG: ${{ secrets.JF_SECRET_DOCKER_REG }}
       DOCKER_REPO: man-docker
-      DOCKER_USER: ci
+      DOCKER_USER: ${{ secrets.JF_SECRET_DOCKER_USER }}
       PROMOTE_REPO: man-docker-release-local
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v3
-        env:
-          JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
+#        env:
+#          JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
         with:
           version: ${{ env.JF_CLI_VERSION }}
 
@@ -148,7 +148,7 @@ jobs:
           registry: ${{ env.DOCKER_REG }}
           username: ${{ env.DOCKER_USER }}
           #password: ${{ inputs.ci_secret }}
-          password: ${{ secrets.DOCKER_SECRET }}
+          password: ${{ secrets.JF_SECRET_DOCKER_PASS }} }}
 
       - name: Build Docker images
         uses: docker/build-push-action@v3
